@@ -1,0 +1,22 @@
+# -*- coding:utf-8 -*-
+# author： luo time:17-9-15
+import urllib.request as urlrequest
+weather_url = 'http://forecast.weather.gov/MapClick.php?lat=37.77492773500046&lon=-122.41941932299972'
+web_page = urlrequest.urlopen(weather_url).read()
+
+from bs4 import BeautifulSoup
+soup = BeautifulSoup(web_page,'html.parser')
+
+soup_forecast_1 = soup.find(id="seven-day-forecast-container").prettify()
+soup_forecast = soup.find(id="seven-day-forecast-container")
+data_list = soup_forecast.find_all(class_='period-name')
+desc_list = soup_forecast.find_all(class_="short-desc")
+temp_list = soup_forecast.find_all(class_="temp")
+
+
+with open("douban_movie_rank.txt", "w") as outputfile:
+	for i in range(9):
+		date = data_list[i].get_text()
+		desc = desc_list[i].get_text()
+		temp = temp_list[i].get_text()
+		outputfile.write("{}|{}|{}\n".format(date,desc,temp))
